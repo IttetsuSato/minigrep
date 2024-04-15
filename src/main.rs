@@ -1,14 +1,27 @@
+extern crate minigrep;
+
 use std::env;
+use std::process;
+
+use minigrep::Config;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    println!("{:?}", args);
 
-    let query = &args[1];
-    let filename = &args[2];
+    let config = Config::new(&args).unwrap_or_else(|err| {
+        // 引数解析時に問題
+        println!("Problem parsing arguments: {}", err);
+        process::exit(1);
+    });
 
     // {}を探しています
-    println!("Searching for {}", query);
+    println!("Searching for {}", config.query);
     // {}というファイルの中
-    println!("In file {}", filename);
+    println!("In file {}", config.filename);
+
+    if let Err(e) = minigrep::run(config) {
+        println!("Application error: {}", e);
+
+        process::exit(1);
+    }
 }
