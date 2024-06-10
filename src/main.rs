@@ -6,11 +6,9 @@ use std::process;
 use minigrep::Config;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    let config = Config::new(&args).unwrap_or_else(|err| {
-        // 引数解析時に問題
-        println!("Problem parsing arguments: {}", err);
+    // イテレータの所有権を直接Config::newに渡す
+    let config = Config::new(env::args()).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {}", err);
         process::exit(1);
     });
 
